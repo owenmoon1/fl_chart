@@ -362,6 +362,9 @@ class CandlestickTouchData extends FlTouchData<CandlestickTouchResponse>
   /// You can customize this tooltip using [touchTooltipData],
   ///
   /// If you need to have a distance threshold for handling touches, use [touchSpotThreshold].
+  ///
+  /// [touchDelayDuration] delays the touch callback execution. Useful when chart is in a scroll view
+  /// to differentiate between scroll gestures and intentional touches. When null, no delay is applied.
   CandlestickTouchData({
     bool? enabled,
     BaseTouchCallback<CandlestickTouchResponse>? touchCallback,
@@ -370,6 +373,7 @@ class CandlestickTouchData extends FlTouchData<CandlestickTouchResponse>
     CandlestickTouchTooltipData? touchTooltipData,
     bool? handleBuiltInTouches,
     double? touchSpotThreshold,
+    this.touchDelayDuration,
   })  : touchTooltipData = touchTooltipData ?? CandlestickTouchTooltipData(),
         handleBuiltInTouches = handleBuiltInTouches ?? true,
         touchSpotThreshold = touchSpotThreshold ?? 4,
@@ -390,6 +394,11 @@ class CandlestickTouchData extends FlTouchData<CandlestickTouchResponse>
   /// we find the nearest spots on touched position based on this threshold
   final double touchSpotThreshold;
 
+  /// Delays the touch callback execution. Useful when chart is in a scroll view
+  /// to differentiate between scroll gestures and intentional touches.
+  /// When null, no delay is applied.
+  final Duration? touchDelayDuration;
+
   /// Copies current [CandlestickTouchData] to a new [CandlestickTouchData],
   /// and replaces provided values.
   CandlestickTouchData copyWith({
@@ -400,6 +409,7 @@ class CandlestickTouchData extends FlTouchData<CandlestickTouchResponse>
     CandlestickTouchTooltipData? touchTooltipData,
     bool? handleBuiltInTouches,
     double? touchSpotThreshold,
+    Duration? touchDelayDuration,
   }) =>
       CandlestickTouchData(
         enabled: enabled ?? this.enabled,
@@ -409,6 +419,7 @@ class CandlestickTouchData extends FlTouchData<CandlestickTouchResponse>
         touchTooltipData: touchTooltipData ?? this.touchTooltipData,
         handleBuiltInTouches: handleBuiltInTouches ?? this.handleBuiltInTouches,
         touchSpotThreshold: touchSpotThreshold ?? this.touchSpotThreshold,
+        touchDelayDuration: touchDelayDuration ?? this.touchDelayDuration,
       );
 
   /// Used for equality check, see [EquatableMixin].
@@ -421,6 +432,7 @@ class CandlestickTouchData extends FlTouchData<CandlestickTouchResponse>
         touchTooltipData,
         handleBuiltInTouches,
         touchSpotThreshold,
+        touchDelayDuration,
       ];
 }
 

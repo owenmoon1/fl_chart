@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:fl_chart/src/chart/base/axis_chart/axis_chart_scaffold_widget.dart';
 import 'package:fl_chart/src/chart/candlestick_chart/candlestick_chart_renderer.dart';
@@ -49,10 +51,19 @@ class _CandlestickChartState extends AnimatedWidgetBaseState<CandlestickChart> {
   /// but we need to keep the provided callback to notify it too.
   BaseTouchCallback<CandlestickTouchResponse>? _providedTouchCallback;
 
+  /// Timer for debouncing touch callbacks
+  Timer? _touchDelayTimer;
+
   ({
     Offset axisCoordinate,
     int spotIndex,
   })? touchedSpots;
+
+  @override
+  void dispose() {
+    _touchDelayTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,31 +154,48 @@ class _CandlestickChartState extends AnimatedWidgetBaseState<CandlestickChart> {
     if (!mounted) {
       return;
     }
-    _providedTouchCallback?.call(event, touchResponse);
 
-    final desiredTouch = event.isInterestedForInteractions;
+    final touchDelayDuration =
+        widget.data.candlestickTouchData.touchDelayDuration;
 
-    if (!desiredTouch ||
-        touchResponse == null ||
-        touchResponse.touchedSpot == null) {
+    // Cancel any existing timer
+    _touchDelayTimer?.cancel();
+
+    void executeTouch() {
+      _providedTouchCallback?.call(event, touchResponse);
+
+      final desiredTouch = event.isInterestedForInteractions;
+
+      if (!desiredTouch ||
+          touchResponse == null ||
+          touchResponse.touchedSpot == null) {
+        setState(() {
+          if (desiredTouch) {
+            touchedSpots = (
+              axisCoordinate:
+                  touchResponse?.touchChartCoordinate ?? Offset.zero,
+              spotIndex: -1,
+            );
+          } else {
+            touchedSpots = null;
+          }
+        });
+        return;
+      }
       setState(() {
-        if (desiredTouch) {
-          touchedSpots = (
-            axisCoordinate: touchResponse?.touchChartCoordinate ?? Offset.zero,
-            spotIndex: -1,
-          );
-        } else {
-          touchedSpots = null;
-        }
+        touchedSpots = (
+          axisCoordinate: touchResponse.touchChartCoordinate,
+          spotIndex: touchResponse.touchedSpot!.spotIndex,
+        );
       });
-      return;
     }
-    setState(() {
-      touchedSpots = (
-        axisCoordinate: touchResponse.touchChartCoordinate,
-        spotIndex: touchResponse.touchedSpot!.spotIndex,
-      );
-    });
+
+    // If touchDelayDuration is provided, delay the touch callback
+    if (touchDelayDuration != null) {
+      _touchDelayTimer = Timer(touchDelayDuration, executeTouch);
+    } else {
+      executeTouch();
+    }
   }
 
   @override
