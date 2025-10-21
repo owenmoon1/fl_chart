@@ -261,9 +261,7 @@ abstract class AxisChartPainter<D extends AxisChartData>
           from.dy > viewSize.height ||
           to.dy > viewSize.height;
 
-      // If showOnTopOfTheChartBoxArea is true, draw line even if it's outside
-      // Otherwise, only draw if inside the chart
-      if (!isLineOutsideOfChart || line.showOnTopOfTheChartBoxArea) {
+      if (!isLineOutsideOfChart) {
         _extraLinesPaint
           ..setColorOrGradientForLine(
             line.color,
@@ -322,52 +320,28 @@ abstract class AxisChartPainter<D extends AxisChartData>
             textDirection: TextDirection.ltr,
           )..layout();
 
-          // Calculate label rect based on fitInsideVertically
-          var labelRect = Rect.fromLTRB(
-            from.dx + padding.left,
-            from.dy - padding.bottom - tp.height,
-            to.dx - padding.right - tp.width,
-            to.dy + padding.top,
-          );
-
-          // If fitInsideVertically is enabled, adjust the label position
-          // to keep it within the viewport bounds
-          if (line.fitInsideVertically) {
-            final labelHeight = label.direction == LabelDirection.horizontal
-                ? tp.height
-                : tp.width;
-
-            // Clamp Y position to keep label within vertical bounds
-            var adjustedY = labelRect.top;
-            if (adjustedY < 0) {
-              adjustedY = 0;
-            } else if (adjustedY + labelHeight > viewSize.height) {
-              adjustedY = viewSize.height - labelHeight;
-            }
-
-            labelRect = Rect.fromLTRB(
-              labelRect.left,
-              adjustedY,
-              labelRect.right,
-              adjustedY + (labelRect.bottom - labelRect.top),
-            );
-          }
-
           switch (label.direction) {
             case LabelDirection.horizontal:
               canvasWrapper.drawText(
                 tp,
-                label.alignment.withinRect(labelRect),
+                label.alignment.withinRect(
+                  Rect.fromLTRB(
+                    from.dx + padding.left,
+                    from.dy - padding.bottom - tp.height,
+                    to.dx - padding.right - tp.width,
+                    to.dy + padding.top,
+                  ),
+                ),
               );
             case LabelDirection.vertical:
               canvasWrapper.drawVerticalText(
                 tp,
                 label.alignment.withinRect(
                   Rect.fromLTRB(
-                    labelRect.left + tp.height,
-                    labelRect.top,
-                    labelRect.right,
-                    labelRect.bottom,
+                    from.dx + padding.left + tp.height,
+                    from.dy - padding.bottom - tp.width,
+                    to.dx - padding.right,
+                    to.dy + padding.top,
                   ),
                 ),
               );
@@ -392,9 +366,7 @@ abstract class AxisChartPainter<D extends AxisChartData>
           from.dx > viewSize.width ||
           to.dx > viewSize.width;
 
-      // If showOnTopOfTheChartBoxArea is true, draw line even if it's outside
-      // Otherwise, only draw if inside the chart
-      if (!isLineOutsideOfChart || line.showOnTopOfTheChartBoxArea) {
+      if (!isLineOutsideOfChart) {
         _extraLinesPaint
           ..setColorOrGradientForLine(
             line.color,
@@ -454,52 +426,28 @@ abstract class AxisChartPainter<D extends AxisChartData>
             textDirection: TextDirection.ltr,
           )..layout();
 
-          // Calculate label rect based on fitInsideHorizontally
-          var labelRect = Rect.fromLTRB(
-            from.dx - padding.right - tp.width,
-            from.dy + padding.top,
-            to.dx + padding.left,
-            to.dy - padding.bottom - tp.height,
-          );
-
-          // If fitInsideHorizontally is enabled, adjust the label position
-          // to keep it within the viewport bounds
-          if (line.fitInsideHorizontally) {
-            final labelWidth = label.direction == LabelDirection.horizontal
-                ? tp.width
-                : tp.height;
-
-            // Clamp X position to keep label within horizontal bounds
-            var adjustedX = labelRect.left;
-            if (adjustedX < 0) {
-              adjustedX = 0;
-            } else if (adjustedX + labelWidth > viewSize.width) {
-              adjustedX = viewSize.width - labelWidth;
-            }
-
-            labelRect = Rect.fromLTRB(
-              adjustedX,
-              labelRect.top,
-              adjustedX + (labelRect.right - labelRect.left),
-              labelRect.bottom,
-            );
-          }
-
           switch (label.direction) {
             case LabelDirection.horizontal:
               canvasWrapper.drawText(
                 tp,
-                label.alignment.withinRect(labelRect),
+                label.alignment.withinRect(
+                  Rect.fromLTRB(
+                    from.dx - padding.right - tp.width,
+                    from.dy + padding.top,
+                    to.dx + padding.left,
+                    to.dy - padding.bottom - tp.height,
+                  ),
+                ),
               );
             case LabelDirection.vertical:
               canvasWrapper.drawVerticalText(
                 tp,
                 label.alignment.withinRect(
                   Rect.fromLTRB(
-                    labelRect.left,
-                    labelRect.top,
-                    labelRect.right + tp.height,
-                    labelRect.bottom,
+                    from.dx - padding.right,
+                    from.dy + padding.top,
+                    to.dx + padding.left + tp.height,
+                    to.dy - padding.bottom - tp.width,
                   ),
                 ),
               );
