@@ -202,11 +202,16 @@ class _CandlestickChartState extends AnimatedWidgetBaseState<CandlestickChart> {
     } else if (event is FlPanUpdateEvent ||
         event is FlPanCancelEvent ||
         event is FlPanEndEvent ||
-        event is FlTapCancelEvent) {
-      // Cancel pending callback if user is scrolling/panning or tap cancelled
+        event is FlTapCancelEvent ||
+        event is FlTapUpEvent) {
+      // Cancel pending callback if user is scrolling/panning, tap cancelled, or tap completed
       _touchDelayTimer?.cancel();
+      // Only execute for quick taps (FlTapUpEvent), not for pan/cancel events
+      if (event is FlTapUpEvent) {
+        executeTouch();
+      }
     } else {
-      // Execute immediately for tap up, long press, etc.
+      // Execute immediately for long press, etc.
       _touchDelayTimer?.cancel();
       executeTouch();
     }
