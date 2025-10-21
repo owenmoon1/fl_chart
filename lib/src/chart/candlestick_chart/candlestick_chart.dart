@@ -190,7 +190,9 @@ class _CandlestickChartState extends AnimatedWidgetBaseState<CandlestickChart> {
     // Determine if we should delay this event
     // Only delay the initial touch down to detect if user is scrolling
     final shouldDelay = touchDelayDuration != null &&
-        (event is FlPanDownEvent || event is FlPanStartEvent);
+        (event is FlPanDownEvent ||
+            event is FlPanStartEvent ||
+            event is FlTapDownEvent);
 
     if (shouldDelay) {
       // Schedule delayed callback for initial touch
@@ -199,11 +201,12 @@ class _CandlestickChartState extends AnimatedWidgetBaseState<CandlestickChart> {
       _touchDelayTimer = Timer(touchDelayDuration, executeTouch);
     } else if (event is FlPanUpdateEvent ||
         event is FlPanCancelEvent ||
-        event is FlPanEndEvent) {
-      // Cancel pending callback if user is scrolling/panning
+        event is FlPanEndEvent ||
+        event is FlTapCancelEvent) {
+      // Cancel pending callback if user is scrolling/panning or tap cancelled
       _touchDelayTimer?.cancel();
     } else {
-      // Execute immediately for taps, long press, etc.
+      // Execute immediately for tap up, long press, etc.
       _touchDelayTimer?.cancel();
       executeTouch();
     }
