@@ -1080,6 +1080,12 @@ class HorizontalLine extends FlLine with EquatableMixin {
   ///
   /// It draws an image in left side of the chart, use [sizedPicture] for vectors,
   /// or [image] for any kind of image.
+  ///
+  /// If [showOnTopOfTheChartBoxArea] is true, the line is rendered above the chart bounds
+  /// (above candlesticks and other chart elements).
+  ///
+  /// If [fitInsideVertically] is true, the label will be forced to fit within
+  /// vertical viewport bounds, preventing label overflow.
   HorizontalLine({
     required this.y,
     HorizontalLineLabel? label,
@@ -1090,6 +1096,8 @@ class HorizontalLine extends FlLine with EquatableMixin {
     this.image,
     this.sizedPicture,
     this.strokeCap = StrokeCap.butt,
+    this.showOnTopOfTheChartBoxArea = false,
+    this.fitInsideVertically = false,
   }) : label = label ?? HorizontalLineLabel();
 
   /// Draws from left to right of the chart using the [y] value.
@@ -1108,6 +1116,12 @@ class HorizontalLine extends FlLine with EquatableMixin {
   /// i.e. if the two ends of the line is round or butt or square.
   final StrokeCap strokeCap;
 
+  /// Forces the line to render above the chart bounds (above candlesticks)
+  final bool showOnTopOfTheChartBoxArea;
+
+  /// Forces the label to fit within vertical viewport bounds
+  final bool fitInsideVertically;
+
   /// Lerps a [HorizontalLine] based on [t] value, check [Tween.lerp].
   static HorizontalLine lerp(HorizontalLine a, HorizontalLine b, double t) =>
       HorizontalLine(
@@ -1120,6 +1134,38 @@ class HorizontalLine extends FlLine with EquatableMixin {
         image: b.image,
         sizedPicture: b.sizedPicture,
         strokeCap: b.strokeCap,
+        showOnTopOfTheChartBoxArea: b.showOnTopOfTheChartBoxArea,
+        fitInsideVertically: b.fitInsideVertically,
+      );
+
+  /// Copies current [HorizontalLine] to a new [HorizontalLine]
+  /// and replaces provided values.
+  HorizontalLine copyHorizontalLineWith({
+    double? y,
+    HorizontalLineLabel? label,
+    Color? color,
+    Gradient? gradient,
+    double? strokeWidth,
+    List<int>? dashArray,
+    Image? image,
+    SizedPicture? sizedPicture,
+    StrokeCap? strokeCap,
+    bool? showOnTopOfTheChartBoxArea,
+    bool? fitInsideVertically,
+  }) =>
+      HorizontalLine(
+        y: y ?? this.y,
+        label: label ?? this.label,
+        color: color ?? this.color,
+        gradient: gradient ?? this.gradient,
+        strokeWidth: strokeWidth ?? this.strokeWidth,
+        dashArray: dashArray ?? this.dashArray,
+        image: image ?? this.image,
+        sizedPicture: sizedPicture ?? this.sizedPicture,
+        strokeCap: strokeCap ?? this.strokeCap,
+        showOnTopOfTheChartBoxArea:
+            showOnTopOfTheChartBoxArea ?? this.showOnTopOfTheChartBoxArea,
+        fitInsideVertically: fitInsideVertically ?? this.fitInsideVertically,
       );
 
   /// Used for equality check, see [EquatableMixin].
@@ -1133,6 +1179,8 @@ class HorizontalLine extends FlLine with EquatableMixin {
         image,
         sizedPicture,
         strokeCap,
+        showOnTopOfTheChartBoxArea,
+        fitInsideVertically,
       ];
 }
 
@@ -1151,6 +1199,12 @@ class VerticalLine extends FlLine with EquatableMixin {
   ///
   /// It draws an image in bottom side of the chart, use [sizedPicture] for vectors,
   /// or [image] for any kind of image.
+  ///
+  /// If [showOnTopOfTheChartBoxArea] is true, the line is rendered above the chart bounds
+  /// (above candlesticks and other chart elements).
+  ///
+  /// If [fitInsideHorizontally] is true, the label will be forced to fit within
+  /// horizontal viewport bounds, preventing label overflow.
   VerticalLine({
     required this.x,
     VerticalLineLabel? label,
@@ -1161,6 +1215,8 @@ class VerticalLine extends FlLine with EquatableMixin {
     this.image,
     this.sizedPicture,
     this.strokeCap = StrokeCap.butt,
+    this.showOnTopOfTheChartBoxArea = false,
+    this.fitInsideHorizontally = false,
   }) : label = label ?? VerticalLineLabel();
 
   /// Draws from bottom to top of the chart using the [x] value.
@@ -1179,6 +1235,12 @@ class VerticalLine extends FlLine with EquatableMixin {
   /// i.e. if the two ends of the line is round or butt or square.
   final StrokeCap strokeCap;
 
+  /// Forces the line to render above the chart bounds (above candlesticks)
+  final bool showOnTopOfTheChartBoxArea;
+
+  /// Forces the label to fit within horizontal viewport bounds
+  final bool fitInsideHorizontally;
+
   /// Lerps a [VerticalLine] based on [t] value, check [Tween.lerp].
   static VerticalLine lerp(VerticalLine a, VerticalLine b, double t) =>
       VerticalLine(
@@ -1191,6 +1253,8 @@ class VerticalLine extends FlLine with EquatableMixin {
         image: b.image,
         sizedPicture: b.sizedPicture,
         strokeCap: b.strokeCap,
+        showOnTopOfTheChartBoxArea: b.showOnTopOfTheChartBoxArea,
+        fitInsideHorizontally: b.fitInsideHorizontally,
       );
 
   /// Copies current [VerticalLine] to a new [VerticalLine]
@@ -1204,6 +1268,8 @@ class VerticalLine extends FlLine with EquatableMixin {
     Image? image,
     SizedPicture? sizedPicture,
     StrokeCap? strokeCap,
+    bool? showOnTopOfTheChartBoxArea,
+    bool? fitInsideHorizontally,
   }) =>
       VerticalLine(
         x: x ?? this.x,
@@ -1214,6 +1280,10 @@ class VerticalLine extends FlLine with EquatableMixin {
         image: image ?? this.image,
         sizedPicture: sizedPicture ?? this.sizedPicture,
         strokeCap: strokeCap ?? this.strokeCap,
+        showOnTopOfTheChartBoxArea:
+            showOnTopOfTheChartBoxArea ?? this.showOnTopOfTheChartBoxArea,
+        fitInsideHorizontally:
+            fitInsideHorizontally ?? this.fitInsideHorizontally,
       );
 
   /// Used for equality check, see [EquatableMixin].
@@ -1227,6 +1297,8 @@ class VerticalLine extends FlLine with EquatableMixin {
         image,
         sizedPicture,
         strokeCap,
+        showOnTopOfTheChartBoxArea,
+        fitInsideHorizontally,
       ];
 }
 
