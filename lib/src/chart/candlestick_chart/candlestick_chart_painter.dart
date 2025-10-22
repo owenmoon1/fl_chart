@@ -402,24 +402,36 @@ class CandlestickChartPainter extends AxisChartPainter<CandlestickChartData> {
       ..color = maskData.color
       ..style = PaintingStyle.fill;
 
+    // Calculate the candlestick body width to adjust mask positioning
+    double bodyWidth = 4.0; // Default body width
+    if (holder.targetData.candlestickPainter is DefaultCandlestickPainter) {
+      final painter =
+          holder.targetData.candlestickPainter as DefaultCandlestickPainter;
+      final style = painter.candlestickStyleProvider(spot, spotIndex);
+      bodyWidth = style.bodyWidth;
+    }
+
+    // Calculate the right edge of the candlestick body
+    final bodyRightEdge = x + (bodyWidth / 2);
+
     Rect maskRect;
     switch (maskData.maskPosition) {
       case CandlestickMaskPosition.right:
         maskRect = Rect.fromLTWH(
-          x,
+          bodyRightEdge, // Start from the right edge of the body instead of center line
           0,
-          viewSize.width - x, // Extend to the full width of the chart
+          viewSize.width -
+              bodyRightEdge, // Extend to the full width of the chart
           viewSize.height,
         );
-        break;
       case CandlestickMaskPosition.left:
+        final bodyLeftEdge = x - (bodyWidth / 2);
         maskRect = Rect.fromLTWH(
           0,
           0,
-          x, // Extend from the left edge to the point
+          bodyLeftEdge, // Extend from the left edge to the left edge of the body
           viewSize.height,
         );
-        break;
       case CandlestickMaskPosition.bottom:
         maskRect = Rect.fromLTWH(
           0,
@@ -427,7 +439,6 @@ class CandlestickChartPainter extends AxisChartPainter<CandlestickChartData> {
           viewSize.width,
           viewSize.height - y, // Extend to the bottom of the chart
         );
-        break;
       case CandlestickMaskPosition.top:
         maskRect = Rect.fromLTWH(
           0,
@@ -435,7 +446,6 @@ class CandlestickChartPainter extends AxisChartPainter<CandlestickChartData> {
           viewSize.width,
           y, // Extend from the top edge to the point
         );
-        break;
     }
 
     // Ensure mask stays within chart bounds and has valid dimensions
