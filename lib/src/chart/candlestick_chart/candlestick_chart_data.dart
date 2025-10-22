@@ -367,6 +367,7 @@ class CandlestickTouchData extends FlTouchData<CandlestickTouchResponse>
     BaseTouchCallback<CandlestickTouchResponse>? touchCallback,
     MouseCursorResolver<CandlestickTouchResponse>? mouseCursorResolver,
     Duration? longPressDuration,
+    Duration? touchDelay,
     CandlestickTouchTooltipData? touchTooltipData,
     bool? handleBuiltInTouches,
     double? touchSpotThreshold,
@@ -378,6 +379,7 @@ class CandlestickTouchData extends FlTouchData<CandlestickTouchResponse>
           touchCallback,
           mouseCursorResolver,
           longPressDuration,
+          touchDelay,
         );
 
   /// show a tooltip on touched spots
@@ -397,6 +399,7 @@ class CandlestickTouchData extends FlTouchData<CandlestickTouchResponse>
     BaseTouchCallback<CandlestickTouchResponse>? touchCallback,
     MouseCursorResolver<CandlestickTouchResponse>? mouseCursorResolver,
     Duration? longPressDuration,
+    Duration? touchDelay,
     CandlestickTouchTooltipData? touchTooltipData,
     bool? handleBuiltInTouches,
     double? touchSpotThreshold,
@@ -406,6 +409,7 @@ class CandlestickTouchData extends FlTouchData<CandlestickTouchResponse>
         touchCallback: touchCallback ?? this.touchCallback,
         mouseCursorResolver: mouseCursorResolver ?? this.mouseCursorResolver,
         longPressDuration: longPressDuration ?? this.longPressDuration,
+        touchDelay: touchDelay ?? this.touchDelay,
         touchTooltipData: touchTooltipData ?? this.touchTooltipData,
         handleBuiltInTouches: handleBuiltInTouches ?? this.handleBuiltInTouches,
         touchSpotThreshold: touchSpotThreshold ?? this.touchSpotThreshold,
@@ -418,6 +422,7 @@ class CandlestickTouchData extends FlTouchData<CandlestickTouchResponse>
         touchCallback,
         mouseCursorResolver,
         longPressDuration,
+        touchDelay,
         touchTooltipData,
         handleBuiltInTouches,
         touchSpotThreshold,
